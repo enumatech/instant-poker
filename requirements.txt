@@ -1,0 +1,7 @@
+bitcoin==1.1.42
+ethereum==1.6.1
+pytest-cov==2.5.1
+pytest-watch==4.1.0
+pytest==3.4.2
+cffi==1.11.4
+secp256k1==0.13.2

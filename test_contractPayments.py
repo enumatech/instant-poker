@@ -96,7 +96,7 @@ class Player():
         print 'last closed:', self.lastClosedRound
         self.contract.submitClaim(sigs, self.lastClosedRound,
                                   hashes, sender=self.sk)
-        print 'respondT1:', s.block.gas_used - g        
+        print 'respondT1:', s.block.gas_used - g
 
     def respondT2(self):
         # To be called immediately after time T1
@@ -104,8 +104,8 @@ class Player():
         print dict(latestClaim=latestClaim,open=self.lastOpenRound,closed=self.lastClosedRound)
 
         assert latestClaim in (self.lastOpenRound, self.lastClosedRound)
-        g = s.block.gas_used                    
-        
+        g = s.block.gas_used
+
         if latestClaim == self.lastOpenRound:
             # Reveal the current message, we may not get the final output,
             # but if not, at least we will get COMPENSATION
@@ -160,7 +160,7 @@ def shares_of_message(m, n):
     return shares
 
 def partialRound(players, round, shares):
-    hashes = map(utils.sha3, shares)    
+    hashes = map(utils.sha3, shares)
     print 'Opening the round for each player'
     sigs = []
     for shr,p in zip(shares,players):
@@ -218,7 +218,7 @@ def test_OK():
     for p in players:
         print 'player[%d]' % p.i, 'responding to T2'
         p.respondT2()
-        
+
     s.mine(25);
     # Anyone can finalize
     g = s.block.gas_used
@@ -255,7 +255,7 @@ def test_1Bad():
     for p in players[:-2]:
         print 'player[%d]' % p.i, 'responding to T2'
         p.respondT2()
-        
+
     s.mine(15);
     # Anyone can finalize
     g = s.block.gas_used
@@ -263,3 +263,4 @@ def test_1Bad():
     print 'Finalize:', s.block.gas_used - g
 
 
+test_OK()

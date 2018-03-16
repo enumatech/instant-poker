@@ -59,39 +59,39 @@ contract SmartDuplex {
     }
     // Increment on new deposit
     function deposit() onlyplayers beforeTrigger payable {
-	deposits[playermap[msg.sender]-1] += msg.value;
+    deposits[playermap[msg.sender]-1] += msg.value;
     }
 
     // Increment on withdrawal
     function withdraw() {
-	
-	// last player withdraws the entire remaining amount
-	if (lastPlayer > 0) {
+
+    // last player withdraws the entire remaining amount
+    if (lastPlayer > 0) {
             assert(playermap[msg.sender] == lastPlayer);
             selfdestruct(msg.sender);
-	}
+    }
 
-	uint i = playermap[msg.sender];
-	uint toWithdraw = 0;
+    uint i = playermap[msg.sender];
+    uint toWithdraw = 0;
 
-	// onlyplayers
-	assert(i-- > 0);
+    // onlyplayers
+    assert(i-- > 0);
 
-	// Before finalizing, can withdraw balance
-	if (T2 == 0 || block.number < T2) {
-	    toWithdraw = balances[i] - withdrawn[i];
-	}
-	// After finalizing, can withdraw deposit+net
-	else {
-	    lastPlayer = 2 - i;
-	    // positive net: Alice gets money
-	    int net2 = (i == 0) ? net : -net;
-	    var finalBalance = uint(int(deposits[i]) + net2);
-	    toWithdraw = finalBalance - withdrawn[i];
-	}
-	
-	withdrawn[i] = toWithdraw;
-	assert(msg.sender.send(toWithdraw));
+    // Before finalizing, can withdraw balance
+    if (T2 == 0 || block.number < T2) {
+        toWithdraw = balances[i] - withdrawn[i];
+    }
+    // After finalizing, can withdraw deposit+net
+    else {
+        lastPlayer = 2 - i;
+        // positive net: Alice gets money
+        int net2 = (i == 0) ? net : -net;
+        var finalBalance = uint(int(deposits[i]) + net2);
+        toWithdraw = finalBalance - withdrawn[i];
+    }
+
+    withdrawn[i] = toWithdraw;
+    assert(msg.sender.send(toWithdraw));
     }
 
     // Only when it is time to finalize
@@ -107,18 +107,18 @@ contract SmartDuplex {
         bestRound = r;
 
         // Check the signature of the other party
-	uint i = (3 - playermap[msg.sender]) - 1;
+    uint i = (3 - playermap[msg.sender]) - 1;
         var _h = sha3(r, _net, _balances);
-	var V =  uint8 (sig[0]);
-	var R = bytes32(sig[1]);
-	var S = bytes32(sig[2]);
-	verifySignature(players[i], _h, V, R, S);
+    var V =  uint8 (sig[0]);
+    var R = bytes32(sig[1]);
+    var S = bytes32(sig[2]);
+    verifySignature(players[i], _h, V, R, S);
 
         // Store the new balances
         for (uint j = 0; j < 2; j++) {
             balances[j] = _balances[j];
         }
-	net = _net;
+    net = _net;
 
         LogNewClaim(r);
     }
